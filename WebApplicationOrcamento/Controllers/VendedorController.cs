@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using WebApplicationOrcamento.Data;
 using WebApplicationOrcamento.Model;
 
@@ -29,9 +30,23 @@ namespace WebApplicationOrcamento.Controllers
         public async Task<IActionResult> GetVendedor(int id)
         {
             var vendedor = _context.Vendedor.FirstOrDefault(x => x.Id == id);
-            //var orcamento = _context.Orcamento;
-            //var comissao = _orcamentoService.CalculaComissao(orcamento);
-            return Ok(vendedor);
+            if (vendedor != null)
+            {
+                
+                var orcamento = _context.Orcamento;
+                var query = from Orcamento in orcamento
+                            where Orcamento.VendedorId == id
+                            select Orcamento.ValorTotal;
+                var valor = query.Sum();
+
+                VendedorResponse vendedorResponse = new(valor);
+                vendedorResponse.Id = id;
+                vendedorResponse.Nome = vendedor.Nome;
+                
+                return Ok(vendedorResponse);
+
+            }
+            return NotFound();
         }
 
         [HttpPost]

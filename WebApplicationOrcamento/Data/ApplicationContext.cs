@@ -12,6 +12,8 @@ namespace WebApplicationOrcamento.Data
         public DbSet<Orcamento> Orcamento { get; set; }
         public DbSet<Produto> Produto { get; set; }
         public DbSet<Vendedor> Vendedor { get; set; }
+        
+        
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
