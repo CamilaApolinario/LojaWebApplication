@@ -12,13 +12,25 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<OrcamentoService, OrcamentoService>();
 builder.Services.AddDbContext<ApplicationContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("Default"),
-builder =>builder.MigrationsAssembly("WebApplicationOrcamento")));
-
+builder => builder.MigrationsAssembly("WebApplicationOrcamento")));
 builder.Services.AddSwaggerGen(c =>
 {
     c.ResolveConflictingActions(x => x.First());
 });
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("Policy",
+                      builder => builder
+                          .AllowAnyOrigin()
+                          .AllowAnyMethod()
+                          .AllowAnyHeader()
+                          );
+});
+
+
 var app = builder.Build();
+app.UseCors("Policy");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

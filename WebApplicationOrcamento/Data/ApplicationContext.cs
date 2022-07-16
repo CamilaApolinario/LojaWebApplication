@@ -12,22 +12,15 @@ namespace WebApplicationOrcamento.Data
         public DbSet<Orcamento> Orcamento { get; set; }
         public DbSet<Produto> Produto { get; set; }
         public DbSet<Vendedor> Vendedor { get; set; }
-        
-        
-
+ 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Produto>().HasKey(t => t.Id);
 
-            modelBuilder.Entity<Orcamento>().HasKey(t => t.Id);
+            modelBuilder.Entity<Orcamento>().HasOne(t => t.Produto);
+            modelBuilder.Entity<Orcamento>().HasOne(t => t.Vendedor);
 
-            modelBuilder.Entity<Vendedor>().HasKey(t => t.Id);
-
-            
-
-           
         }
     }
 

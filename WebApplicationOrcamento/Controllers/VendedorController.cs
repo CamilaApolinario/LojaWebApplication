@@ -10,43 +10,40 @@ namespace WebApplicationOrcamento.Controllers
     public class VendedorController : ControllerBase
     {
         private readonly ApplicationContext _context;
-        private readonly OrcamentoService _orcamentoService;
 
-
-        public VendedorController(ApplicationContext context, OrcamentoService orcamentoService)
+        public VendedorController(ApplicationContext context)
         {
             _context = context;
-            _orcamentoService = orcamentoService;
-
         }
+
         [HttpGet]
-        public async Task<IActionResult> GetVendedor()
+        public IActionResult GetVendedor()
         {
-            var vendedor = _context.Vendedor;
+            var vendedor = _context.Vendedor.ToList();
             return Ok(vendedor);
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetVendedor(int id)
+        public IActionResult GetVendedor(int id)
         {
             var vendedor = _context.Vendedor.FirstOrDefault(x => x.Id == id);
             if (vendedor != null)
             {
-                
                 var orcamento = _context.Orcamento;
                 var query = from Orcamento in orcamento
-                            where Orcamento.VendedorId == id
+                            where Orcamento.Vendedor.Id == id
                             select Orcamento.ValorTotal;
                 var valor = query.Sum();
 
-                VendedorResponse vendedorResponse = new(valor);
-                vendedorResponse.Id = id;
-                vendedorResponse.Nome = vendedor.Nome;
-                
-                return Ok(vendedorResponse);
+                VendedorResponse vendedorResponse = new(valor)
+                {
+                    Id = id,
+                    Nome = vendedor.Nome
+                };
 
+                return Ok(vendedorResponse);
             }
-            return NotFound();
+            return NotFound($"Vendedor com id: {id}, não existe");
         }
 
         [HttpPost]
@@ -59,6 +56,20 @@ namespace WebApplicationOrcamento.Controllers
                 return Ok(vendedor);
             }
             return NotFound();
+        }
+
+        [HttpDelete]
+        public IActionResult DeletaVendedor([FromQuery] string nome)
+        {
+            var vendedor = _context.Vendedor.FirstOrDefault(x => x.Nome == nome);
+            if (vendedor == null)
+            {
+                return NotFound($"Vendedor {vendedor} não encontrado!");
+
+            }
+            _context.Remove(vendedor);
+            _context.SaveChanges();
+            return Ok();
         }
     }
 }

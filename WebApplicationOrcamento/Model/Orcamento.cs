@@ -4,24 +4,21 @@
     {
         public Orcamento()
         {
-
         }
+
         public Orcamento(Vendedor vendedor, Produto produto, int quantidadeProduto)
         {
             Vendedor = vendedor;
             Produto = produto;
             QuantidadeProduto = quantidadeProduto;
-            ValorTotal = produto.Valor * quantidadeProduto;
-
+            ValorTotal = quantidadeProduto * produto.Valor;
         }
 
         public int Id { get; set; }
-        public Vendedor Vendedor { get; set; }
-        public Produto Produto { get; set; }
+        public virtual Vendedor Vendedor { get; set; }
+        public virtual Produto Produto { get; set; }
         public int QuantidadeProduto { get; set; }
-        public double ValorTotal { get; set; }
-        public int VendedorId { get; set; }
-        public int ProdutoId { get; set; }
+        public double ValorTotal { get; set;}
     }
 }
 

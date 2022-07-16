@@ -1,4 +1,5 @@
-﻿using WebApplicationOrcamento.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using WebApplicationOrcamento.Data;
 using WebApplicationOrcamento.Model;
 
 namespace WebApplicationOrcamento
@@ -17,5 +18,13 @@ namespace WebApplicationOrcamento
             return orcamento;
         }
 
+        //public Orcamento AtualizaOrcamento(Orcamento orcamento)
+        //{
+
+        //    _context.Update(orcamento).State = EntityState.Modified;
+        //    _context.SaveChangesAsync();
+        //    return orcamento;
+        //}
+    
     }
 }

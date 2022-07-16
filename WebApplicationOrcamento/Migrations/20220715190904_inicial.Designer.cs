@@ -11,8 +11,8 @@ using WebApplicationOrcamento.Data;
 namespace WebApplicationOrcamento.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20220615183853_Adicionando propriedades")]
-    partial class Adicionandopropriedades
+    [Migration("20220715190904_inicial")]
+    partial class inicial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
