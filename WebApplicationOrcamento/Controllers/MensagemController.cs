@@ -6,8 +6,6 @@ using WebApplicationOrcamento.Model;
 
 namespace WebApplicationOrcamento
 {
-
-
     [Route("api/[controller]")]
     public class MensagemController : ControllerBase
     {
@@ -47,7 +45,6 @@ namespace WebApplicationOrcamento
                         routingKey: Orcamento,
                         basicProperties: null,
                         body: body);
-
                 }
             }
             return Accepted(orcamento);

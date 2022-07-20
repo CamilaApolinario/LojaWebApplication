@@ -15,7 +15,7 @@
         }
 
         public int Id { get; set; }
-        public virtual Vendedor Vendedor { get; set; }
+        public virtual Vendedor Vendedor { get; set; }      
         public virtual Produto Produto { get; set; }
         public int QuantidadeProduto { get; set; }
         public double ValorTotal { get; set;}

@@ -11,8 +11,8 @@ using WebApplicationOrcamento.Data;
 namespace WebApplicationOrcamento.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20220715190904_inicial")]
-    partial class inicial
+    [Migration("20220720131152_Inicial")]
+    partial class Inicial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

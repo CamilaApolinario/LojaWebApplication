@@ -1,6 +1,4 @@
-﻿using WebApplicationOrcamento.Model;
-
-namespace WebApplicationOrcamento
+﻿namespace WebApplicationOrcamento
 {
     public class VendedorResponse
     {
@@ -14,9 +12,6 @@ namespace WebApplicationOrcamento
         }
         public int Id { get; set; }
         public string Nome { get; set; }
-
         public double Comissao { get; set; }
-
-
     }
 }

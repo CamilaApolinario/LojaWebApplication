@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using WebApplicationOrcamento.Data;
 using WebApplicationOrcamento.Model;
 
@@ -17,14 +16,14 @@ namespace WebApplicationOrcamento.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetVendedor()
+        public IActionResult MostraTodosVendedor()
         {
             var vendedor = _context.Vendedor.ToList();
             return Ok(vendedor);
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetVendedor(int id)
+        public IActionResult MostraVendedorId(int id)
         {
             var vendedor = _context.Vendedor.FirstOrDefault(x => x.Id == id);
             if (vendedor != null)
@@ -56,6 +55,20 @@ namespace WebApplicationOrcamento.Controllers
                 return Ok(vendedor);
             }
             return NotFound();
+        }
+
+        [HttpPut]
+        public IActionResult AtualizaVendedor(int id, [FromBody] string nome)
+        {
+            var vendedor = _context.Vendedor.FirstOrDefault(x => x.Id == id);
+            if (vendedor != null)
+            {
+                vendedor.Nome = nome;
+                _context.Update(vendedor);
+                _context.SaveChanges();
+                return Ok();
+            }
+            return NotFound($"Vendedor {vendedor} não encontrado!");          
         }
 
         [HttpDelete]

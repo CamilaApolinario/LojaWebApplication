@@ -4,7 +4,6 @@
     {
         public Produto()
         {
-
         }
         public Produto(int id, string nome, double valor)
         {

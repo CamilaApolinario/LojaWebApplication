@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebApplicationOrcamento.Data;
-using WebApplicationOrcamento.Model;
 
 namespace WebApplicationOrcamento.Controllers
 {
@@ -9,8 +8,7 @@ namespace WebApplicationOrcamento.Controllers
     [Route("[controller]")]
     public class OrcamentoController : ControllerBase
     {
-
-        private ApplicationContext _context;
+        private readonly ApplicationContext _context;
         private readonly OrcamentoService _orcamentoService;
         private readonly ILogger<OrcamentoController> _logger;
 
@@ -31,7 +29,7 @@ namespace WebApplicationOrcamento.Controllers
         }
 
         [HttpPost]
-        public ActionResult Orcamento([FromBody] OrcamentoRequest orcamentoRequest)
+        public ActionResult AdicionaOrcamento([FromBody] OrcamentoRequest orcamentoRequest)
         {
             _logger.LogInformation("Start inserting Orçamentos");
 
@@ -59,16 +57,34 @@ namespace WebApplicationOrcamento.Controllers
         [HttpPut("{id}")]
         public ActionResult AtualizaOrcamento(int id, [FromBody] UpdateOrcamentoRequest orcamentoRequest)
         {
-            var orcamento = _context.Orcamento.FirstOrDefault(x=> x.Id == id); 
-            if(orcamentoRequest.Quantidade != null && orcamento.Produto != null)
+            var orcamento = _context.Orcamento
+                .Include(p => p.Produto)
+                .FirstOrDefault(x=> x.Id == id);
+            var produto = _context.Produto.FirstOrDefault(x => x.Nome == orcamentoRequest.Produto.Nome);
+            var vendedor = _context.Vendedor.FirstOrDefault(x => x.Nome == orcamentoRequest.Vendedor.Nome);
+
+            if (orcamento != null && orcamento.Produto != null)
             {
-                var valorTotal = orcamentoRequest.Quantidade * orcamento.Produto.Valor;
+                var valorTotal = orcamentoRequest.Quantidade * produto.Valor;
                 orcamento.ValorTotal = valorTotal;
+                orcamento.QuantidadeProduto = orcamentoRequest.Quantidade;
+                orcamento.Produto = produto;
+                orcamento.Vendedor = vendedor;
                 _context.Orcamento.Update(orcamento);
                 _context.SaveChanges();
                 return Ok(orcamento);
             }
             return BadRequest();      
+        }
+
+        [HttpDelete]
+        public IActionResult DeleteOrcamento(int id)
+        {
+            var orcamento = _context.Orcamento.FirstOrDefault(x=>x.Id == id);
+            _context.Orcamento.Remove(orcamento);
+            _context.SaveChanges();
+            return Ok();
+
         }
     }
 }

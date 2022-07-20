@@ -4,7 +4,6 @@
     {
         public Vendedor()
         {
-
         }
         public Vendedor(int id, string nome)
         {
@@ -13,6 +12,6 @@
         }
 
         public int Id { get; set; }
-        public string Nome { get; set; }  
+        public string Nome { get; set; }
     }
 }
