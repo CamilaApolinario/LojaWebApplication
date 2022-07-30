@@ -1,6 +1,6 @@
 ﻿namespace WebApplicationOrcamento.Model
 {
-    public class Orcamento
+    public class Orcamento : Recurso 
     {
         public Orcamento()
         {

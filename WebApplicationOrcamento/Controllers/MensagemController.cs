@@ -17,7 +17,7 @@ namespace WebApplicationOrcamento
             _factory = new ConnectionFactory
             {
                 HostName = "localhost",
-                Port = 49158,
+                Port = 49153,
                 UserName = "guest",
                 Password = "guest"
             };
