@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using WebApplicationOrcamento;
 using WebApplicationOrcamento.Data;
+using WebApplicationOrcamento.Domain.Interfaces;
+using WebApplicationOrcamento.Infra.Data.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -83,6 +85,9 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 builder.Services.AddControllers();
+
+builder.Services.AddScoped<IBaseRepository, OrcamentoRepository>();
+builder.Services.AddScoped<IOrcamentoService, OrcamentoService>();
 
 var app = builder.Build();
 app.UseCors("Policy");

@@ -39,7 +39,7 @@ namespace WebApplicationOrcamento.Controllers
         }
 
         [HttpGet(Name = nameof(MostraTodosOrcamento))]
-        
+        [AllowAnonymous]
         public async Task<ActionResult<ColecaoRecursos<Orcamento>>> MostraTodosOrcamento()
         {
             var orcamento = await _context.Orcamento
@@ -56,7 +56,7 @@ namespace WebApplicationOrcamento.Controllers
         }
 
         [HttpPost("private")]
-        [Authorize]
+        [AllowAnonymous]
         public ActionResult AdicionaOrcamento([FromBody] OrcamentoRequest orcamentoRequest)
         {
             _logger.LogInformation("Start inserting Orçamentos");
@@ -71,8 +71,7 @@ namespace WebApplicationOrcamento.Controllers
                 var orcamento = _orcamentoService.AdicionaOrcamento(produtos, vendedores[random.Next(vendedores.Count - 1)], quantidadeProduto);
                 if (orcamento != null)
                 {
-                    _context.Add(orcamento);
-                    _context.SaveChanges();
+                    
                     _logger.LogInformation("Success inserting Orçamentos");
 
                     return Ok(orcamento);
