@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WebApplicationOrcamento.Data;
+using WebApplicationOrcamento.Domain;
 using WebApplicationOrcamento.Model;
 
 namespace WebApplicationOrcamento.Controllers

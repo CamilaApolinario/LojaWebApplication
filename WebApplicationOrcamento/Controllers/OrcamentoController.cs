@@ -2,13 +2,14 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebApplicationOrcamento.Data;
+using WebApplicationOrcamento.Domain;
 using WebApplicationOrcamento.Model;
+using WebApplicationOrcamento.Service.Service;
 
 namespace WebApplicationOrcamento.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    [Authorize]
     public class OrcamentoController : ControllerBase
     {
 
@@ -26,26 +27,30 @@ namespace WebApplicationOrcamento.Controllers
         private readonly OrcamentoService _orcamentoService;
         private readonly ILogger<OrcamentoController> _logger;
         private readonly IUrlHelper _urlHelper;
+        private readonly BaseService<Produto> _serviceProduto;
+        private readonly BaseService<Vendedor> _serviceVendedor;
+
 
         public OrcamentoController(ILogger<OrcamentoController> logger,
                                    OrcamentoService orcamentoService,
                                    ApplicationContext context,
-                                   IUrlHelper urlHelper)
+                                   IUrlHelper urlHelper,
+                                   BaseService<Produto> serviceProduto,
+                                   BaseService<Vendedor> serviceVendedor
+                                   )
         {
             _logger = logger;
             _orcamentoService = orcamentoService;
             _context = context;
             _urlHelper = urlHelper;
+            _serviceProduto = serviceProduto;
+            _serviceVendedor = serviceVendedor;
         }
 
         [HttpGet(Name = nameof(MostraTodosOrcamento))]
-        [AllowAnonymous]
         public async Task<ActionResult<ColecaoRecursos<Orcamento>>> MostraTodosOrcamento()
         {
-            var orcamento = await _context.Orcamento
-                .Include(p=> p.Produto)
-                .Include(v=> v.Vendedor)
-                .ToListAsync();
+            var orcamento = _orcamentoService.GetOrcamento();
             orcamento.ForEach(c => GerarLinks(c));
 
             var resultado = new ColecaoRecursos<Orcamento>(orcamento);
@@ -56,15 +61,14 @@ namespace WebApplicationOrcamento.Controllers
         }
 
         [HttpPost("private")]
-        [AllowAnonymous]
         public ActionResult AdicionaOrcamento([FromBody] OrcamentoRequest orcamentoRequest)
         {
             _logger.LogInformation("Start inserting Orçamentos");
 
-            var produtos = _context.Produto.FirstOrDefault(x => x.Nome == orcamentoRequest.NomeProduto);
+            var produtos = _serviceProduto.GetById(orcamentoRequest.IdProduto);
             var quantidadeProduto = orcamentoRequest.QuantidadeProduto;
             var random = new Random();
-            var vendedores = _context.Vendedor.ToList();
+            var vendedores = _serviceVendedor.Get();
 
             if (produtos != null)
             {
@@ -83,22 +87,13 @@ namespace WebApplicationOrcamento.Controllers
 
         [HttpPut("{id}")]
         public ActionResult AtualizaOrcamento(int id, [FromBody] UpdateOrcamentoRequest request)
-        {           
-            var orcamento = _context.Orcamento
-                .Include(p => p.Produto)
-                .FirstOrDefault(x => x.Id == id);
-            var produto = _context.Produto.FirstOrDefault(x => x.Nome == request.Produto.Nome);
-            var vendedor = _context.Vendedor.FirstOrDefault(x => x.Nome == request.Vendedor.Nome);
+        {
+            var orcamento = _orcamentoService.GetOrcamento(request.Id);       
 
             if (orcamento != null && orcamento.Produto != null)
             {
-                var valorTotal = request.Quantidade * produto.Valor;
-                orcamento.ValorTotal = valorTotal;
-                orcamento.QuantidadeProduto = request.Quantidade;
-                orcamento.Produto = produto;
-                orcamento.Vendedor = vendedor;
-                _context.Orcamento.Update(orcamento);
-                _context.SaveChanges();
+                _orcamentoService.UpdateOrcamento(request);
+                
                 return Ok(orcamento);
             }
             return BadRequest();
@@ -127,10 +122,7 @@ namespace WebApplicationOrcamento.Controllers
         [HttpDelete]
         public IActionResult DeleteOrcamento(int id)
         {
-            var orcamento = _context.Orcamento.FirstOrDefault(x => x.Id == id);
-            _context.Orcamento.Remove(orcamento);
-            _context.SaveChanges();
-            return Ok();
+            return Ok(_orcamentoService.DeletaOrcamento(id));        
         }
        
     }

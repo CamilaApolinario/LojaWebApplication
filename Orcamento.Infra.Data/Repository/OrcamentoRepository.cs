@@ -1,11 +1,11 @@
-﻿using WebApplicationOrcamento.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using WebApplicationOrcamento.Data;
 using WebApplicationOrcamento.Domain.Interfaces;
 using WebApplicationOrcamento.Model;
 
 namespace WebApplicationOrcamento.Infra.Data.Repository
 {
-
-    public class OrcamentoRepository : IBaseRepository
+    public class OrcamentoRepository : IOrcamentoRepository
     {
         protected readonly ApplicationContext _context;
 
@@ -20,9 +20,9 @@ namespace WebApplicationOrcamento.Infra.Data.Repository
             _context.SaveChanges();
         }
 
-        public void Update(Orcamento obj)
+        public void Update(Orcamento orc)
         {
-            _context.Entry(obj).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+            _context.Entry(orc).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
             _context.SaveChanges();
         }
 
@@ -33,11 +33,15 @@ namespace WebApplicationOrcamento.Infra.Data.Repository
         }
 
         public IList<Orcamento> Select() =>
-            _context.Set<Orcamento>().ToList();
+            _context.Set<Orcamento>()
+            .Include(p => p.Produto)
+            .Include(v => v.Vendedor)
+            .ToList();
 
         public Orcamento Select(int id) =>
-            _context.Set<Orcamento>().Find(id);
-
+            _context.Set<Orcamento>()
+            .Include(p => p.Produto)
+            .Include(v => v.Vendedor)
+            .FirstOrDefault(x => x.Id == id);
     }
 }
-

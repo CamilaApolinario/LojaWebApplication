@@ -1,6 +1,8 @@
-﻿namespace WebApplicationOrcamento.Model
+﻿using WebApplicationOrcamento.Domain.Interfaces;
+
+namespace WebApplicationOrcamento.Model
 {
-    public class Orcamento : Recurso 
+    public class Orcamento : Recurso, IBaseEntity
     {
         public Orcamento()
         {

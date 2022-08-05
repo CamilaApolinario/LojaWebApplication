@@ -13,13 +13,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Service", "Service", "{BA17
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Domain", "Domain", "{F8E2AB7C-52A6-45B9-9D50-E729903C9894}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApplicationOrcamento.Domain", "Orcamento.Domain\WebApplicationOrcamento.Domain.csproj", "{460DD38F-0ECD-4D05-98A9-0976B0849A18}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApplicationOrcamento.Domain", "Orcamento.Domain\WebApplicationOrcamento.Domain.csproj", "{460DD38F-0ECD-4D05-98A9-0976B0849A18}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data", "Data", "{C1641886-5A13-4501-8A10-F0F87BC7077B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApplicationOrcamento.Infra.Data", "Orcamento.Infra.Data\WebApplicationOrcamento.Infra.Data.csproj", "{45863A26-6E0E-4DDF-A686-0EE0662E01AB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApplicationOrcamento.Infra.Data", "Orcamento.Infra.Data\WebApplicationOrcamento.Infra.Data.csproj", "{45863A26-6E0E-4DDF-A686-0EE0662E01AB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApplicationOrcamento.Service", "WebApplicationOrcamento.Service\WebApplicationOrcamento.Service.csproj", "{6C20047B-F38E-49B5-90B5-67CFB45CC3F3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApplicationOrcamento.Service", "WebApplicationOrcamento.Service\WebApplicationOrcamento.Service.csproj", "{6C20047B-F38E-49B5-90B5-67CFB45CC3F3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

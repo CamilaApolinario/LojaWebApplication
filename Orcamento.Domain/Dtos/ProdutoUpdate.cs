@@ -1,4 +1,4 @@
-﻿namespace WebApplicationOrcamento
+﻿namespace WebApplicationOrcamento.Domain
 {
     public class ProdutoUpdate
     {

@@ -1,6 +1,8 @@
-﻿namespace WebApplicationOrcamento.Model
+﻿using WebApplicationOrcamento.Domain.Entities;
+
+namespace WebApplicationOrcamento.Model
 {
-    public class Produto
+    public class Produto : BaseEntity
     {
         public Produto()
         {
@@ -12,7 +14,6 @@
             Valor = valor;
         }
 
-        public int Id { get; set; }
         public string Nome { get; set; }
         public double Valor { get; set; }
     }

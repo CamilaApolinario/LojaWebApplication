@@ -1,6 +1,8 @@
-﻿namespace WebApplicationOrcamento.Model
+﻿using WebApplicationOrcamento.Domain.Entities;
+
+namespace WebApplicationOrcamento.Model
 {
-    public class Vendedor
+    public class Vendedor : BaseEntity
     {
         public Vendedor()
         {
@@ -10,8 +12,6 @@
             Id = id;
             Nome = nome;
         }
-
-        public int Id { get; set; }
         public string Nome { get; set; }
     }
 }
