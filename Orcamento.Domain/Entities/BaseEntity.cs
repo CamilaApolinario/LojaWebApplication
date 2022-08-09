@@ -2,8 +2,9 @@
 
 namespace WebApplicationOrcamento.Domain.Entities
 {
-    public class BaseEntity : IBaseEntity
+    public abstract class BaseEntity : IBaseEntity
     {
-        public int Id { get; set; }
+        public virtual int Id { get; set; }
+        public virtual string Nome { get; set; }
     }
 }

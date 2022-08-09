@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using WebApplicationOrcamento.Data;
 using WebApplicationOrcamento.Domain;
 using WebApplicationOrcamento.Model;
+using WebApplicationOrcamento.Service.Service;
 
 namespace WebApplicationOrcamento.Controllers
 {
@@ -9,24 +9,23 @@ namespace WebApplicationOrcamento.Controllers
     [Route("[controller]")]
     public class ProdutoController : ControllerBase
     {
-        private readonly ApplicationContext _context;
+        private readonly BaseService<Produto> _baseService;
 
-        public ProdutoController(ApplicationContext context)
+        public ProdutoController(BaseService<Produto> baseService)
         {
-            _context = context;
+            _baseService = baseService;
         }
 
         [HttpGet]
         public async Task<IActionResult> MostraTodosProdutos()
         {
-            var produto = _context.Produto;
-            return Ok(produto);
+            return Ok(_baseService.Get());            
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> MostraProdutoId(int id)
         {
-            var produto = _context.Produto.FirstOrDefault(x => x.Id == id);
+            var produto = _baseService.GetById(id);
             
             if (produto != null)
             {
@@ -40,9 +39,8 @@ namespace WebApplicationOrcamento.Controllers
         {
             if (produto != null)
             {
-                _context.Produto.Add(produto);
-                _context.SaveChanges();
-                return Ok(produto);
+                _baseService.Add(produto);
+                return Ok($"Produto {produto} foi adicionado com sucesso");
             }
             return NotFound($"Produto: {produto} não foi adicionado");
         }
@@ -50,26 +48,28 @@ namespace WebApplicationOrcamento.Controllers
         [HttpPut]
         public IActionResult AtualizaProduto(int id, [FromBody] ProdutoUpdate novoProduto)
         {
-            var produto = _context.Produto.FirstOrDefault(x => x.Id == id);
-            produto.Nome= novoProduto.Nome;
-            produto.Valor= novoProduto.Valor;
-            _context.Produto.Update(produto);
-            _context.SaveChanges();
-            return Ok(novoProduto);
+            var produto = _baseService.GetById(id);
+            if (produto != null)
+            {
+                produto.Nome = novoProduto.Nome;
+                produto.Valor = novoProduto.Valor;
+                _baseService.Update(produto);
+                return Ok($"Produto {novoProduto} atualizado com sucesso!");
+            }
+            return NotFound($"Produto de Id: {id} não encontrado!");
         }
 
         [HttpDelete]
-        public IActionResult DeletaProduto([FromQuery] string nome)
+        public IActionResult DeletaProduto([FromQuery] int id)
         {
-            var produto = _context.Produto.FirstOrDefault(x => x.Nome == nome);
+            var produto = _baseService.GetById(id);
             if (produto == null)
             {
-                return NotFound($"Produto {produto} não encontrado!");
+                return NotFound($"Produto de Id: {id} não encontrado!");
             }
 
-            _context.Produto.Remove(produto);
-            _context.SaveChanges();
-            return Ok($"Produto {produto} foi excluido!");
+            _baseService.Delete(id);
+            return Ok($"Produto de id: {id} foi excluido!");
         }
     }
 }

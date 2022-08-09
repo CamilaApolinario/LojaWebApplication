@@ -13,7 +13,7 @@ namespace WebApplicationOrcamento.Service.Service
             _baseRepository = baseRepository;
         }
 
-        public TEntity Add<TEntity1>(TEntity obj)
+        public TEntity Add(TEntity obj)
         {
             _baseRepository.Insert(obj);
             return obj;
@@ -23,9 +23,10 @@ namespace WebApplicationOrcamento.Service.Service
 
         public IList<TEntity> Get() => _baseRepository.Select().ToList();
 
-        public TEntity GetById(int id) => _baseRepository.Select(id);
+        public TEntity GetById(int id) => _baseRepository.SelectId(id);
+        public TEntity GetByName(string nome) => _baseRepository.SelectName(nome);
 
-        public TEntity Update<TEntity1>(TEntity obj)
+        public TEntity Update(TEntity obj)
         {
             _baseRepository.Update(obj);
             return obj;

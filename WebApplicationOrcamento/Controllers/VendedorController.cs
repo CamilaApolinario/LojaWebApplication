@@ -2,6 +2,7 @@
 using WebApplicationOrcamento.Data;
 using WebApplicationOrcamento.Domain;
 using WebApplicationOrcamento.Model;
+using WebApplicationOrcamento.Service.Service;
 
 namespace WebApplicationOrcamento.Controllers
 {
@@ -9,24 +10,25 @@ namespace WebApplicationOrcamento.Controllers
     [Route("[controller]")]
     public class VendedorController : ControllerBase
     {
+        private readonly BaseService<Vendedor> _baseService;
         private readonly ApplicationContext _context;
 
-        public VendedorController(ApplicationContext context)
+        public VendedorController(BaseService<Vendedor> baseService, ApplicationContext context)
         {
+            _baseService = baseService;
             _context = context;
         }
 
         [HttpGet]
         public IActionResult MostraTodosVendedor()
         {
-            var vendedor = _context.Vendedor.ToList();
-            return Ok(vendedor);
+            return Ok(_baseService.Get());
         }
 
         [HttpGet("{id}")]
         public IActionResult MostraVendedorId(int id)
         {
-            var vendedor = _context.Vendedor.FirstOrDefault(x => x.Id == id);
+            var vendedor = _baseService.GetById(id);
             if (vendedor != null)
             {
                 var orcamento = _context.Orcamento;
@@ -51,9 +53,8 @@ namespace WebApplicationOrcamento.Controllers
         {
             if (vendedor != null)
             {
-                _context.Add(vendedor);
-                _context.SaveChanges();
-                return Ok(vendedor);
+                _baseService.Add(vendedor);
+                return Ok($"Vwndedor {vendedor} foi adicionado!");
             }
             return NotFound();
         }
@@ -61,29 +62,27 @@ namespace WebApplicationOrcamento.Controllers
         [HttpPut]
         public IActionResult AtualizaVendedor(int id, [FromBody] string nome)
         {
-            var vendedor = _context.Vendedor.FirstOrDefault(x => x.Id == id);
+            var vendedor = _baseService.GetById(id);
             if (vendedor != null)
             {
                 vendedor.Nome = nome;
-                _context.Update(vendedor);
-                _context.SaveChanges();
-                return Ok();
+                _baseService.Update(vendedor);               
+                return Ok($"Vendedor {vendedor} foi atualizado!");
             }
-            return NotFound($"Vendedor {vendedor} não encontrado!");          
+            return NotFound($"Vendedor {id} não encontrado!");          
         }
 
         [HttpDelete]
-        public IActionResult DeletaVendedor([FromQuery] string nome)
+        public IActionResult DeletaVendedor([FromQuery] int id)
         {
-            var vendedor = _context.Vendedor.FirstOrDefault(x => x.Nome == nome);
+            var vendedor = _baseService.GetById(id);
             if (vendedor == null)
             {
-                return NotFound($"Vendedor {vendedor} não encontrado!");
+                return NotFound($"Vendedor {id} não encontrado!");
 
             }
-            _context.Remove(vendedor);
-            _context.SaveChanges();
-            return Ok();
+            _baseService.Delete(id);
+            return Ok($"Vendedor de id {id}, foi excluido!");
         }
     }
 }

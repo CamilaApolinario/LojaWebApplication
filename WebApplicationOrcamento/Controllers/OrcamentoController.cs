@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
 using WebApplicationOrcamento.Data;
 using WebApplicationOrcamento.Domain;
 using WebApplicationOrcamento.Model;
@@ -20,7 +18,6 @@ namespace WebApplicationOrcamento.Controllers
             orcamento.Links.Add(new LinkDTO(_urlHelper.Link(nameof(AtualizaOrcamento), new { id = orcamento.Id }), rel: "update-cliente", metodo: "PUT"));
 
             orcamento.Links.Add(new LinkDTO(_urlHelper.Link(nameof(DeleteOrcamento), new { id = orcamento.Id }), rel: "delete-cliente", metodo: "DELETE"));
-
         }
 
         private readonly ApplicationContext _context;
@@ -30,14 +27,12 @@ namespace WebApplicationOrcamento.Controllers
         private readonly BaseService<Produto> _serviceProduto;
         private readonly BaseService<Vendedor> _serviceVendedor;
 
-
         public OrcamentoController(ILogger<OrcamentoController> logger,
                                    OrcamentoService orcamentoService,
                                    ApplicationContext context,
                                    IUrlHelper urlHelper,
                                    BaseService<Produto> serviceProduto,
-                                   BaseService<Vendedor> serviceVendedor
-                                   )
+                                   BaseService<Vendedor> serviceVendedor)
         {
             _logger = logger;
             _orcamentoService = orcamentoService;
@@ -65,66 +60,59 @@ namespace WebApplicationOrcamento.Controllers
         {
             _logger.LogInformation("Start inserting Orçamentos");
 
-            var produtos = _serviceProduto.GetById(orcamentoRequest.IdProduto);
+            var produtos = _serviceProduto.GetByName(orcamentoRequest.NomeProduto);
             var quantidadeProduto = orcamentoRequest.QuantidadeProduto;
-            var random = new Random();
+            var random = new Random(0-1000);
             var vendedores = _serviceVendedor.Get();
 
             if (produtos != null)
             {
                 var orcamento = _orcamentoService.AdicionaOrcamento(produtos, vendedores[random.Next(vendedores.Count - 1)], quantidadeProduto);
                 if (orcamento != null)
-                {
-                    
+                {                   
                     _logger.LogInformation("Success inserting Orçamentos");
-
                     return Ok(orcamento);
                 }
             }
-
             return NotFound();
         }
 
         [HttpPut("{id}")]
         public ActionResult AtualizaOrcamento(int id, [FromBody] UpdateOrcamentoRequest request)
         {
-            var orcamento = _orcamentoService.GetOrcamento(request.Id);       
+            var orcamento = _orcamentoService.GetOrcamento(id);       
 
             if (orcamento != null && orcamento.Produto != null)
             {
-                _orcamentoService.UpdateOrcamento(request);
-                
+                _orcamentoService.UpdateOrcamento(id, request);                
                 return Ok(orcamento);
             }
-            return BadRequest();
+            return NotFound($"Orçamento de id {id}, não encontrado!");
         }
 
         [HttpPatch("{id}")]
         public ActionResult AtualizaQuantOrcamento(int id, [FromBody] int quantidade)
         {
-            var orcamento = _context.Orcamento
-                .Include(p => p.Produto)
-                .FirstOrDefault(x => x.Id == id);
+            var orcamento = _orcamentoService.GetOrcamento(id);
             
             if (orcamento != null && orcamento.Produto != null)
             {
-                var valorTotal = quantidade * orcamento.Produto.Valor;
-                orcamento.ValorTotal = valorTotal;
-                orcamento.QuantidadeProduto = quantidade;
-                
-                _context.Orcamento.Update(orcamento);
-                _context.SaveChanges();
+                _orcamentoService.AtualizaQuantidadeOrcamento(id, quantidade);
                 return Ok(orcamento);
             }
-            return BadRequest();
+            return NotFound($"Orçamento de id {id}, não encontrado!");
         }
 
         [HttpDelete]
         public IActionResult DeleteOrcamento(int id)
         {
-            return Ok(_orcamentoService.DeletaOrcamento(id));        
-        }
-       
+            var orcamento = _orcamentoService.GetOrcamento(id);
+            if (orcamento != null)
+            {
+                return Ok(_orcamentoService.DeletaOrcamento(id));
+            }
+            return NotFound($"Orcamento de id: {id} não encontrado!");
+        }       
     }
 }
 

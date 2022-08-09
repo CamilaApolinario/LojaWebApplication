@@ -2,7 +2,7 @@
 {
     public class OrcamentoRequest
     {
-        public int IdProduto { get; set; }
+        public string? NomeProduto { get; set; }
         public int QuantidadeProduto { get; set; }
     }
 }

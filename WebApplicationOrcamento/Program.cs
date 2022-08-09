@@ -51,7 +51,7 @@ builder.Services.AddAuthentication(options =>
     options.Audience = builder.Configuration["Auth0:Audience"];
 });
 
-//bloqueia todos os endpoints
+//bloqueia todos os endpoints com Auth0
 //builder.Services.AddSwaggerGen(c =>
 //{
 //    //All the other stuff. 
@@ -89,13 +89,12 @@ builder.Services.AddSwaggerGen(c =>
 });
 builder.Services.AddControllers();
 
-builder.Services.AddScoped<IOrcamentoRepository, OrcamentoRepository>();
 builder.Services.AddScoped<IOrcamentoService, OrcamentoService>();
-builder.Services.AddScoped<BaseRepository<Produto>, BaseRepository<Produto>>();
 builder.Services.AddScoped<BaseService<Produto>, BaseService<Produto>>();
-builder.Services.AddScoped<BaseRepository<Vendedor>, BaseRepository<Vendedor>>();
 builder.Services.AddScoped<BaseService<Vendedor>, BaseService<Vendedor>>();
-
+builder.Services.AddScoped<OrcamentoRepository, OrcamentoRepository>();
+builder.Services.AddScoped<BaseRepository<Produto>, BaseRepository<Produto>>();
+builder.Services.AddScoped<BaseRepository<Vendedor>, BaseRepository<Vendedor>>();
 
 var app = builder.Build();
 app.UseCors("Policy");

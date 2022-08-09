@@ -22,13 +22,13 @@ namespace WebApplicationOrcamento.Infra.Data.Repository
 
         public void Update(Orcamento orc)
         {
-            _context.Entry(orc).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+            _context.Entry(orc).State = EntityState.Modified;
             _context.SaveChanges();
         }
 
         public void Delete(int id)
         {
-            _context.Set<Orcamento>().Remove(Select(id));
+            _context.Remove(id);
             _context.SaveChanges();
         }
 
@@ -38,7 +38,7 @@ namespace WebApplicationOrcamento.Infra.Data.Repository
             .Include(v => v.Vendedor)
             .ToList();
 
-        public Orcamento Select(int id) =>
+        public Orcamento? Select(int id) =>
             _context.Set<Orcamento>()
             .Include(p => p.Produto)
             .Include(v => v.Vendedor)

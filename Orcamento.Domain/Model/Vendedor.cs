@@ -12,6 +12,10 @@ namespace WebApplicationOrcamento.Model
             Id = id;
             Nome = nome;
         }
-        public string Nome { get; set; }
+
+        public override string ToString()
+        {
+            return " Id " + Id + " Nome " + Nome;
+        }
     }
 }
