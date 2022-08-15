@@ -2,8 +2,13 @@
 
 namespace WebApplicationOrcamento.Domain.Interfaces
 {
-    public interface IOrcamentoService
+    public interface IOrcamentoService : IBaseService<Orcamento> 
     {
         Orcamento AdicionaOrcamento(Produto produto, Vendedor vendedor, int quantidadeProduto);
+
+        Orcamento AtualizaOrcamento(int id, UpdateOrcamentoRequest request);
+
+        Orcamento AtualizaQuantidadeOrcamento(int id, int quantidade);
+
     }
 }

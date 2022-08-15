@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WebApplicationOrcamento.Data;
 using WebApplicationOrcamento.Domain;
+using WebApplicationOrcamento.Domain.Interfaces;
 using WebApplicationOrcamento.Model;
 using WebApplicationOrcamento.Service.Service;
 
@@ -11,48 +12,46 @@ namespace WebApplicationOrcamento.Controllers
     public class OrcamentoController : ControllerBase
     {
 
-        private void GerarLinks(Orcamento orcamento)
-        {
-            orcamento.Links.Add(new LinkDTO(_urlHelper.Link(nameof(MostraTodosOrcamento), new { id = orcamento.Id }), rel: "self", metodo: "GET"));
+        //private void GerarLinks(Orcamento orcamento)
+        //{
+        //    orcamento.Links.Add(new LinkDTO(_urlHelper.Link(nameof(MostraTodosOrcamento), new { id = orcamento.Id }), rel: "self", metodo: "GET"));
 
-            orcamento.Links.Add(new LinkDTO(_urlHelper.Link(nameof(AtualizaOrcamento), new { id = orcamento.Id }), rel: "update-cliente", metodo: "PUT"));
+        //    orcamento.Links.Add(new LinkDTO(_urlHelper.Link(nameof(AtualizaOrcamento), new { id = orcamento.Id }), rel: "update-cliente", metodo: "PUT"));
 
-            orcamento.Links.Add(new LinkDTO(_urlHelper.Link(nameof(DeleteOrcamento), new { id = orcamento.Id }), rel: "delete-cliente", metodo: "DELETE"));
-        }
+        //    orcamento.Links.Add(new LinkDTO(_urlHelper.Link(nameof(DeleteOrcamento), new { id = orcamento.Id }), rel: "delete-cliente", metodo: "DELETE"));
+        //}
 
-        private readonly ApplicationContext _context;
-        private readonly OrcamentoService _orcamentoService;
+        private readonly IOrcamentoService _orcamentoService;
         private readonly ILogger<OrcamentoController> _logger;
         private readonly IUrlHelper _urlHelper;
-        private readonly BaseService<Produto> _serviceProduto;
-        private readonly BaseService<Vendedor> _serviceVendedor;
+        private readonly IBaseService<Produto> _serviceProduto;
+        private readonly IVendedorService _serviceVendedor;
 
         public OrcamentoController(ILogger<OrcamentoController> logger,
-                                   OrcamentoService orcamentoService,
-                                   ApplicationContext context,
+                                   IOrcamentoService orcamentoService,
                                    IUrlHelper urlHelper,
-                                   BaseService<Produto> serviceProduto,
-                                   BaseService<Vendedor> serviceVendedor)
+                                   IBaseService<Produto> serviceProduto,
+                                   IVendedorService serviceVendedor)
         {
             _logger = logger;
             _orcamentoService = orcamentoService;
-            _context = context;
             _urlHelper = urlHelper;
             _serviceProduto = serviceProduto;
             _serviceVendedor = serviceVendedor;
         }
 
         [HttpGet(Name = nameof(MostraTodosOrcamento))]
-        public async Task<ActionResult<ColecaoRecursos<Orcamento>>> MostraTodosOrcamento()
+        //public async Task<ActionResult<ColecaoRecursos<Orcamento>>> MostraTodosOrcamento()
+        public async Task<IActionResult> MostraTodosOrcamento()
         {
-            var orcamento = _orcamentoService.GetOrcamento();
-            orcamento.ForEach(c => GerarLinks(c));
+            var orcamento = _orcamentoService.BuscarTodos();
+            //orcamento.ForEach(c => GerarLinks(c));
 
-            var resultado = new ColecaoRecursos<Orcamento>(orcamento);
-            resultado.Links.Add(new LinkDTO(_urlHelper.Link(nameof(MostraTodosOrcamento), new { }), rel: "self", metodo: "GET"));
-            resultado.Links.Add(new LinkDTO(_urlHelper.Link(nameof(AdicionaOrcamento), new { }), rel: "create-cliente", metodo: "POST"));
+            //var resultado = new ColecaoRecursos<Orcamento>(orcamento);
+            //resultado.Links.Add(new LinkDTO(_urlHelper.Link(nameof(MostraTodosOrcamento), new { }), rel: "self", metodo: "GET"));
+            //resultado.Links.Add(new LinkDTO(_urlHelper.Link(nameof(AdicionaOrcamento), new { }), rel: "create-cliente", metodo: "POST"));
 
-            return resultado;
+            return Ok(orcamento);
         }
 
         [HttpPost("private")]
@@ -60,10 +59,10 @@ namespace WebApplicationOrcamento.Controllers
         {
             _logger.LogInformation("Start inserting Orçamentos");
 
-            var produtos = _serviceProduto.GetByName(orcamentoRequest.NomeProduto);
+            var produtos = _serviceProduto.BuscarPorId(orcamentoRequest.IdProduto);
             var quantidadeProduto = orcamentoRequest.QuantidadeProduto;
             var random = new Random(0-1000);
-            var vendedores = _serviceVendedor.Get();
+            var vendedores = _serviceVendedor.BuscarTodos();
 
             if (produtos != null)
             {
@@ -80,11 +79,11 @@ namespace WebApplicationOrcamento.Controllers
         [HttpPut("{id}")]
         public ActionResult AtualizaOrcamento(int id, [FromBody] UpdateOrcamentoRequest request)
         {
-            var orcamento = _orcamentoService.GetOrcamento(id);       
+            var orcamento = _orcamentoService.BuscarPorId(id);       
 
             if (orcamento != null && orcamento.Produto != null)
             {
-                _orcamentoService.UpdateOrcamento(id, request);                
+                _orcamentoService.AtualizaOrcamento(id, request);                
                 return Ok(orcamento);
             }
             return NotFound($"Orçamento de id {id}, não encontrado!");
@@ -93,7 +92,7 @@ namespace WebApplicationOrcamento.Controllers
         [HttpPatch("{id}")]
         public ActionResult AtualizaQuantOrcamento(int id, [FromBody] int quantidade)
         {
-            var orcamento = _orcamentoService.GetOrcamento(id);
+            var orcamento = _orcamentoService.BuscarPorId(id);
             
             if (orcamento != null && orcamento.Produto != null)
             {
@@ -106,10 +105,11 @@ namespace WebApplicationOrcamento.Controllers
         [HttpDelete]
         public IActionResult DeleteOrcamento(int id)
         {
-            var orcamento = _orcamentoService.GetOrcamento(id);
+            var orcamento = _orcamentoService.BuscarPorId(id);
             if (orcamento != null)
             {
-                return Ok(_orcamentoService.DeletaOrcamento(id));
+                _orcamentoService.Excluir(orcamento);
+                return Ok("Orçamento excluído!");
             }
             return NotFound($"Orcamento de id: {id} não encontrado!");
         }       

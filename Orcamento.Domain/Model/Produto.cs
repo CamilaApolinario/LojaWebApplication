@@ -14,10 +14,11 @@ namespace WebApplicationOrcamento.Model
             Valor = valor;
         }
         public double Valor { get; set; }
+        public string Nome { get; set; }
 
         public override string ToString()
         {
-            return " Id " + Id + " Nome " + Nome + " Valor " + Valor;
+            return " Id: " + Id + " Nome: " + Nome + " Valor: " + Valor;
         }
     }
 }

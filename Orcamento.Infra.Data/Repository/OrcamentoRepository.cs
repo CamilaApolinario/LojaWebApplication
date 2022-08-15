@@ -5,31 +5,12 @@ using WebApplicationOrcamento.Model;
 
 namespace WebApplicationOrcamento.Infra.Data.Repository
 {
-    public class OrcamentoRepository : IOrcamentoRepository
+    public class OrcamentoRepository : BaseRepository<Orcamento>, IBaseRepository<Orcamento> 
     {
-        protected readonly ApplicationContext _context;
+        //protected readonly ApplicationContext _context;
 
-        public OrcamentoRepository(ApplicationContext context)
+        public OrcamentoRepository(ApplicationContext context) : base(context)
         {
-            _context = context;
-        }
-
-        public void Insert(Orcamento orc)
-        {
-            _context.Set<Orcamento>().Add(orc);
-            _context.SaveChanges();
-        }
-
-        public void Update(Orcamento orc)
-        {
-            _context.Entry(orc).State = EntityState.Modified;
-            _context.SaveChanges();
-        }
-
-        public void Delete(int id)
-        {
-            _context.Remove(id);
-            _context.SaveChanges();
         }
 
         public IList<Orcamento> Select() =>
@@ -38,7 +19,7 @@ namespace WebApplicationOrcamento.Infra.Data.Repository
             .Include(v => v.Vendedor)
             .ToList();
 
-        public Orcamento? Select(int id) =>
+        public Orcamento? SelectId(int id) =>
             _context.Set<Orcamento>()
             .Include(p => p.Produto)
             .Include(v => v.Vendedor)

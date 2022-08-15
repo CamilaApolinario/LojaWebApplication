@@ -1,6 +1,6 @@
 ﻿namespace WebApplicationOrcamento.Domain.Interfaces
 {
-    public interface IBaseEntity
+    public interface IBaseEntityId 
     {
         int Id { get; set; }
     }

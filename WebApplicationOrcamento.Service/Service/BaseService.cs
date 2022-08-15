@@ -1,35 +1,35 @@
 ﻿using WebApplicationOrcamento.Domain.Entities;
 using WebApplicationOrcamento.Domain.Interfaces;
-using WebApplicationOrcamento.Infra.Data.Repository;
 
 namespace WebApplicationOrcamento.Service.Service
 {
     public class BaseService<TEntity> : IBaseService<TEntity> where TEntity : BaseEntity
     {
-        private readonly BaseRepository<TEntity> _baseRepository;
 
-        public BaseService(BaseRepository<TEntity> baseRepository)
+
+        private readonly IBaseRepository<TEntity> _baseRepository;
+
+        public BaseService(IBaseRepository<TEntity> baseRepository)
         {
             _baseRepository = baseRepository;
         }
 
-        public TEntity Add(TEntity obj)
+        public TEntity Adicionar(TEntity obj)
         {
             _baseRepository.Insert(obj);
             return obj;
         }
 
-        public void Delete(int id) => _baseRepository.Delete(id);
+        public void Excluir(TEntity obj) => _baseRepository.Delete(obj);
 
-        public IList<TEntity> Get() => _baseRepository.Select().ToList();
+        public IList<TEntity> BuscarTodos() => _baseRepository.SelectAll().ToList();
 
-        public TEntity GetById(int id) => _baseRepository.SelectId(id);
-        public TEntity GetByName(string nome) => _baseRepository.SelectName(nome);
+        public TEntity BuscarPorId(int id) => _baseRepository.SelectId(id);
 
-        public TEntity Update(TEntity obj)
+        public TEntity Atualizar(TEntity obj)
         {
             _baseRepository.Update(obj);
             return obj;
-        }
+        }        
     }
 }

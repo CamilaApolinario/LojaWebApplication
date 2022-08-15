@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WebApplicationOrcamento.Data;
 using WebApplicationOrcamento.Domain;
+using WebApplicationOrcamento.Domain.Interfaces;
 using WebApplicationOrcamento.Model;
+using WebApplicationOrcamento.Service;
 using WebApplicationOrcamento.Service.Service;
 
 namespace WebApplicationOrcamento.Controllers
@@ -10,39 +12,26 @@ namespace WebApplicationOrcamento.Controllers
     [Route("[controller]")]
     public class VendedorController : ControllerBase
     {
-        private readonly BaseService<Vendedor> _baseService;
-        private readonly ApplicationContext _context;
+        private readonly IVendedorService _baseService;
 
-        public VendedorController(BaseService<Vendedor> baseService, ApplicationContext context)
+        public VendedorController(IVendedorService baseService)
         {
-            _baseService = baseService;
-            _context = context;
+            _baseService = baseService;  
         }
 
         [HttpGet]
         public IActionResult MostraTodosVendedor()
         {
-            return Ok(_baseService.Get());
+            return Ok(_baseService.BuscarTodos());
         }
 
         [HttpGet("{id}")]
         public IActionResult MostraVendedorId(int id)
         {
-            var vendedor = _baseService.GetById(id);
+            var vendedor = _baseService.BuscarPorId(id);
             if (vendedor != null)
             {
-                var orcamento = _context.Orcamento;
-                var query = from Orcamento in orcamento
-                            where Orcamento.Vendedor.Id == id
-                            select Orcamento.ValorTotal;
-                var valor = query.Sum();
-
-                VendedorResponse vendedorResponse = new(valor)
-                {
-                    Id = id,
-                    Nome = vendedor.Nome
-                };
-
+                var vendedorResponse = _baseService.CalculaComissao(vendedor);
                 return Ok(vendedorResponse);
             }
             return NotFound($"Vendedor com id: {id}, não existe");
@@ -53,7 +42,7 @@ namespace WebApplicationOrcamento.Controllers
         {
             if (vendedor != null)
             {
-                _baseService.Add(vendedor);
+                _baseService.Adicionar(vendedor);
                 return Ok($"Vwndedor {vendedor} foi adicionado!");
             }
             return NotFound();
@@ -62,11 +51,11 @@ namespace WebApplicationOrcamento.Controllers
         [HttpPut]
         public IActionResult AtualizaVendedor(int id, [FromBody] string nome)
         {
-            var vendedor = _baseService.GetById(id);
+            var vendedor = _baseService.BuscarPorId(id);
             if (vendedor != null)
             {
                 vendedor.Nome = nome;
-                _baseService.Update(vendedor);               
+                _baseService.Atualizar(vendedor);               
                 return Ok($"Vendedor {vendedor} foi atualizado!");
             }
             return NotFound($"Vendedor {id} não encontrado!");          
@@ -75,13 +64,13 @@ namespace WebApplicationOrcamento.Controllers
         [HttpDelete]
         public IActionResult DeletaVendedor([FromQuery] int id)
         {
-            var vendedor = _baseService.GetById(id);
+            var vendedor = _baseService.BuscarPorId(id);
             if (vendedor == null)
             {
                 return NotFound($"Vendedor {id} não encontrado!");
 
             }
-            _baseService.Delete(id);
+            _baseService.Excluir(vendedor);
             return Ok($"Vendedor de id {id}, foi excluido!");
         }
     }

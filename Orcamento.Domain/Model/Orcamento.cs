@@ -1,8 +1,8 @@
-﻿using WebApplicationOrcamento.Domain.Interfaces;
+﻿using WebApplicationOrcamento.Domain.Entities;
 
 namespace WebApplicationOrcamento.Model
 {
-    public class Orcamento : Recurso, IBaseEntity
+    public class Orcamento : BaseEntity
     {
         public Orcamento()
         {
@@ -16,7 +16,6 @@ namespace WebApplicationOrcamento.Model
             ValorTotal = quantidadeProduto * produto.Valor;
         }
 
-        public int Id { get; set; }
         public virtual Vendedor Vendedor { get; set; }      
         public virtual Produto Produto { get; set; }
         public int QuantidadeProduto { get; set; }

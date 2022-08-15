@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Service\ProdutoService.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Orcamento.Domain\WebApplicationOrcamento.Domain.csproj" />
     <ProjectReference Include="..\Orcamento.Infra.Data\WebApplicationOrcamento.Infra.Data.csproj" />
   </ItemGroup>
