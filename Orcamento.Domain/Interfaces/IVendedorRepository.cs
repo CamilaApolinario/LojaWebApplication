@@ -2,9 +2,9 @@
 
 namespace WebApplicationOrcamento.Domain.Interfaces
 {
-    public interface IVendedorService: IBaseService<Vendedor> 
+    public interface IVendedorRepository : IBaseRepository<Vendedor>
     {
-        VendedorResponse CalculaComissao(Vendedor vendedor);
+        double ValorTotalOrcamentos(int id);
         Vendedor BuscarPorNome(string nome);
     }
 }

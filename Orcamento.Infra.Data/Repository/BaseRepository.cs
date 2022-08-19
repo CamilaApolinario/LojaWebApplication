@@ -2,7 +2,6 @@
 using WebApplicationOrcamento.Data;
 using WebApplicationOrcamento.Domain.Entities;
 using WebApplicationOrcamento.Domain.Interfaces;
-using WebApplicationOrcamento.Model;
 
 namespace WebApplicationOrcamento.Infra.Data.Repository
 {
@@ -37,17 +36,7 @@ namespace WebApplicationOrcamento.Infra.Data.Repository
             _context.Set<TEntity>().ToList();   
 
         public TEntity SelectId(int id) =>
-             _context.Set<TEntity>().FirstOrDefault(x => x.Id == id);
-
-        public double GetValorTotal(int id)
-        {
-            var orcamento = _context.Orcamento.ToList();
-
-            var query = from Orcamento in orcamento
-            where Orcamento.Vendedor.Id == id
-            select Orcamento.ValorTotal;
-            return query.Sum();
-        }
+             _context.Set<TEntity>().FirstOrDefault(x => x.Id == id);     
     }
 }
 

@@ -1,11 +1,10 @@
 ﻿using WebApplicationOrcamento.Model;
 
-namespace WebApplicationOrcamento.Domain.Interfaces;
-    public interface IOrcamentoRepository
+namespace WebApplicationOrcamento.Domain.Interfaces
+{
+    public interface IOrcamentoRepository : IBaseRepository<Orcamento>
     {
-        void Delete(int id);
-        void Insert(Orcamento orc);
-        IList<Orcamento> Select();
-        Orcamento Select(int id);
-        void Update(Orcamento orc);
+        IList<Orcamento> SelectAll();
+        Orcamento SelectId(int id);
     }
+}

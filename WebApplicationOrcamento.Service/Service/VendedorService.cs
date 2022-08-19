@@ -6,15 +6,15 @@ namespace WebApplicationOrcamento.Service.Service
 {
     public class VendedorService : BaseService<Vendedor>, IVendedorService
     {
-        private readonly IBaseRepository<Vendedor> _repository;
-        public VendedorService(IBaseRepository<Vendedor> repository) : base(repository)
+        private readonly IVendedorRepository _repository;
+        public VendedorService(IVendedorRepository repository) : base(repository)
         {
             _repository = repository;
         }
 
         public VendedorResponse CalculaComissao(Vendedor vendedor)
         {
-            var valor = _repository.GetValorTotal(vendedor.Id);
+            var valor = _repository.ValorTotalOrcamentos(vendedor.Id);
 
             VendedorResponse vendedorResponse = new(valor)
             {
@@ -23,5 +23,6 @@ namespace WebApplicationOrcamento.Service.Service
             };
             return vendedorResponse;
         }
+        public Vendedor BuscarPorNome(string nome) => _repository.BuscarPorNome(nome);
     }
 }

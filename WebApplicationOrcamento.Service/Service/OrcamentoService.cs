@@ -7,13 +7,13 @@ namespace WebApplicationOrcamento
 {
     public class OrcamentoService : BaseService<Orcamento>, IOrcamentoService
     {
-        private readonly IBaseRepository<Orcamento> _orcamentoRepository;
-        private readonly IBaseRepository<Produto> _produtoRepository;
-        private readonly IBaseRepository<Vendedor> _vendedorRepository;
+        private readonly IOrcamentoRepository _orcamentoRepository;
+        private readonly IProdutoRepository _produtoRepository;
+        private readonly IVendedorRepository _vendedorRepository;
 
-        public OrcamentoService(IBaseRepository<Orcamento> orcamentoRepository, 
-                                IBaseRepository<Produto> produtoRepository,
-                                IBaseRepository<Vendedor> vendedorRepository) : base(orcamentoRepository)
+        public OrcamentoService(IOrcamentoRepository orcamentoRepository, 
+                                IProdutoRepository produtoRepository,
+                                IVendedorRepository vendedorRepository) : base(orcamentoRepository)
         {
             _orcamentoRepository = orcamentoRepository;
             _produtoRepository = produtoRepository;
@@ -30,8 +30,8 @@ namespace WebApplicationOrcamento
         public Orcamento AtualizaOrcamento(int id, UpdateOrcamentoRequest request)
         {
             var orcamento = _orcamentoRepository.SelectId(id);
-            var produto = _produtoRepository.SelectId(request.Produto.Id);
-            var vendedor = _vendedorRepository.SelectId(request.Vendedor.Id);
+            var produto = _produtoRepository.BuscarPorNome(request.Produto.Nome);
+            var vendedor = _vendedorRepository.BuscarPorNome(request.Vendedor.Nome);
             var valorTotal = request.Quantidade * produto.Valor;
             orcamento.ValorTotal = valorTotal;
             orcamento.QuantidadeProduto = request.Quantidade;
@@ -51,6 +51,9 @@ namespace WebApplicationOrcamento
 
             _orcamentoRepository.Update(orcamento);
             return orcamento;
-        }      
+        }
+
+        public IList<Orcamento> BuscarTodos() => _orcamentoRepository.SelectAll();
+        public Orcamento BuscarPorId(int id) => _orcamentoRepository.SelectId(id);
     }
 }

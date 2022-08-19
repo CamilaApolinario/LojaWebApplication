@@ -10,8 +10,6 @@
 
         IList<TEntity> SelectAll();
 
-        TEntity SelectId(int id);
-
-        double GetValorTotal(int id);       
+        TEntity SelectId(int id);     
     }
 }

@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <Compile Remove="Entities\BaseEntityName.cs" />
-    <Compile Remove="Interfaces\INomeRepository.cs" />
   </ItemGroup>
 
 </Project>

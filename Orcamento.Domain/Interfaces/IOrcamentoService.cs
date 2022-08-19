@@ -10,5 +10,8 @@ namespace WebApplicationOrcamento.Domain.Interfaces
 
         Orcamento AtualizaQuantidadeOrcamento(int id, int quantidade);
 
+        IList<Orcamento> BuscarTodos();
+        Orcamento BuscarPorId(int id);
+
     }
 }

@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using WebApplicationOrcamento.Data;
 using WebApplicationOrcamento.Domain;
 using WebApplicationOrcamento.Domain.Interfaces;
-using WebApplicationOrcamento.Model;
-using WebApplicationOrcamento.Service.Service;
 
 namespace WebApplicationOrcamento.Controllers
 {
@@ -24,13 +21,13 @@ namespace WebApplicationOrcamento.Controllers
         private readonly IOrcamentoService _orcamentoService;
         private readonly ILogger<OrcamentoController> _logger;
         private readonly IUrlHelper _urlHelper;
-        private readonly IBaseService<Produto> _serviceProduto;
+        private readonly IProdutoService _serviceProduto;
         private readonly IVendedorService _serviceVendedor;
 
         public OrcamentoController(ILogger<OrcamentoController> logger,
                                    IOrcamentoService orcamentoService,
                                    IUrlHelper urlHelper,
-                                   IBaseService<Produto> serviceProduto,
+                                   IProdutoService serviceProduto,
                                    IVendedorService serviceVendedor)
         {
             _logger = logger;
@@ -50,7 +47,7 @@ namespace WebApplicationOrcamento.Controllers
             //var resultado = new ColecaoRecursos<Orcamento>(orcamento);
             //resultado.Links.Add(new LinkDTO(_urlHelper.Link(nameof(MostraTodosOrcamento), new { }), rel: "self", metodo: "GET"));
             //resultado.Links.Add(new LinkDTO(_urlHelper.Link(nameof(AdicionaOrcamento), new { }), rel: "create-cliente", metodo: "POST"));
-
+       
             return Ok(orcamento);
         }
 
@@ -59,10 +56,11 @@ namespace WebApplicationOrcamento.Controllers
         {
             _logger.LogInformation("Start inserting Orçamentos");
 
-            var produtos = _serviceProduto.BuscarPorId(orcamentoRequest.IdProduto);
+            var produtos = _serviceProduto.BuscarPorNome(orcamentoRequest.NomeProduto);
             var quantidadeProduto = orcamentoRequest.QuantidadeProduto;
             var random = new Random(0-1000);
             var vendedores = _serviceVendedor.BuscarTodos();
+
 
             if (produtos != null)
             {
@@ -75,7 +73,7 @@ namespace WebApplicationOrcamento.Controllers
             }
             return NotFound();
         }
-
+        
         [HttpPut("{id}")]
         public ActionResult AtualizaOrcamento(int id, [FromBody] UpdateOrcamentoRequest request)
         {
@@ -86,9 +84,8 @@ namespace WebApplicationOrcamento.Controllers
                 _orcamentoService.AtualizaOrcamento(id, request);                
                 return Ok(orcamento);
             }
-            return NotFound($"Orçamento de id {id}, não encontrado!");
-        }
-
+            return NotFound($"Orçamento de id {id}, não encontrado!");        }
+        
         [HttpPatch("{id}")]
         public ActionResult AtualizaQuantOrcamento(int id, [FromBody] int quantidade)
         {

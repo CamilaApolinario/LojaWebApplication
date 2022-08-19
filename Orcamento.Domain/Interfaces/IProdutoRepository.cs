@@ -2,7 +2,7 @@
 
 namespace WebApplicationOrcamento.Domain.Interfaces
 {
-    public interface IProdutoService : IBaseService<Produto>
+    public interface IProdutoRepository : IBaseRepository<Produto>
     {
         Produto BuscarPorNome(string nome);
     }

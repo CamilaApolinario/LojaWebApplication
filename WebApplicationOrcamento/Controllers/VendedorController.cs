@@ -1,10 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using WebApplicationOrcamento.Data;
-using WebApplicationOrcamento.Domain;
 using WebApplicationOrcamento.Domain.Interfaces;
 using WebApplicationOrcamento.Model;
-using WebApplicationOrcamento.Service;
-using WebApplicationOrcamento.Service.Service;
 
 namespace WebApplicationOrcamento.Controllers
 {

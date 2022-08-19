@@ -9,9 +9,9 @@ namespace WebApplicationOrcamento.Controllers
     [Route("[controller]")]
     public class ProdutoController : ControllerBase
     {
-        private readonly IBaseService<Produto> _baseService;
+        private readonly IProdutoService _baseService;
 
-        public ProdutoController(IBaseService<Produto> baseService)
+        public ProdutoController(IProdutoService baseService)
         {
             _baseService = baseService;
         }
@@ -19,7 +19,7 @@ namespace WebApplicationOrcamento.Controllers
         [HttpGet]
         public async Task<IActionResult> MostraTodosProdutos()
         {
-            return Ok(_baseService.BuscarTodos());            
+            return Ok(_baseService.BuscarTodos()); 
         }
 
         [HttpGet("{id}")]
